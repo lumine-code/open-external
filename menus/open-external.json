@@ -2,6 +2,9 @@
   "context-menu": {
     ".tree-view .file, .tree-view .directory": [
       {
+        "type": "separator"
+      },
+      {
         "label": "Open Externally",
         "command": "open-external:open"
       },
@@ -13,7 +16,10 @@
         "type": "separator"
       }
     ],
-    ".image-view, .image-editor, .pdf-viewer": [
+    ".image-editor, .pdf-view": [
+      {
+        "type": "separator"
+      },
       {
         "label": "Open Externally",
         "command": "open-external:open"
@@ -30,6 +36,9 @@
     // earns a place here. The tab carries no view of its own, hence a scope of
     // its own; `.active` is what makes it the file the workspace answers with.
     "atom-text-editor:not([mini]), atom-pane[data-active-item-path] .tab.active": [
+      {
+        "type": "separator"
+      },
       {
         "label": "Show in Folder",
         "command": "open-external:show"

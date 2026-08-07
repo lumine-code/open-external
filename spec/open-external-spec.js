@@ -6,6 +6,45 @@ describe("open-external", () => {
     expect(atom.packages.isPackageActive("open-external")).toBe(false);
   });
 
+  describe("choosing what a command acts on", () => {
+    let main;
+
+    beforeEach(async () => {
+      const pack = await atom.packages.activatePackage("open-external");
+      main = pack.mainModule;
+      main.consumeTreeViewSelection({ selectedPaths: () => ["/selected/one", "/selected/two"] });
+    });
+
+    afterEach(async () => {
+      await atom.packages.deactivatePackage("open-external");
+    });
+
+    it("takes the tree view's selection when the dispatch came from there", () => {
+      const row = document.createElement("li");
+      const treeView = document.createElement("div");
+      treeView.classList.add("tree-view");
+      treeView.appendChild(row);
+
+      expect(main.pathsForEvent({ target: row })).toEqual(["/selected/one", "/selected/two"]);
+    });
+
+    it("takes the active item everywhere else, including the application menu", async () => {
+      await atom.workspace.open(__filename);
+      expect(main.pathsForEvent({ target: atom.workspace.getElement() })).toEqual([__filename]);
+    });
+
+    it("says why it refused when there is no file to act on", () => {
+      main.consumeTreeViewSelection({ selectedPaths: () => [] });
+      const warnings = [];
+      atom.notifications.onDidAddNotification((notification) => warnings.push(notification));
+
+      main.runForEvent({ target: atom.workspace.getElement() }, "showInFolder");
+
+      expect(warnings.length).toBe(1);
+      expect(warnings[0].getType()).toBe("warning");
+    });
+  });
+
   describe("revealing the file a tab names", () => {
     let tab;
 
@@ -29,10 +68,13 @@ describe("open-external", () => {
       await atom.packages.deactivatePackage("open-external");
     });
 
-    // A tab sits outside the view it names, so neither the editor scope nor
-    // the image and PDF one reaches it.
-    it("registers the commands on the active tab", () => {
-      const names = atom.commands.findCommands({ target: tab }).map((command) => command.name);
+    // A tab sits outside the view it names, and the application menu dispatches
+    // at whatever holds focus, so neither surface can be a scope the commands
+    // depend on. One workspace registration reaches every one of them.
+    it("registers the commands on the workspace", () => {
+      const names = atom.commands
+        .findCommands({ target: atom.workspace.getElement() })
+        .map((command) => command.name);
 
       expect(names).toContain("open-external:show");
       expect(names).toContain("open-external:open");

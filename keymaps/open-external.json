@@ -7,7 +7,7 @@
     "ctrl-enter": "open-external:show",
     "e": "open-external:toggle"
   },
-  "atom-text-editor:not([mini]), .image-view, .image-editor, .pdf-viewer, .tree-view": {
+  "atom-text-editor:not([mini]), .image-editor, .pdf-view, .tree-view": {
     "alt-f12": "open-external:open",
     "ctrl-f12": "open-external:show"
   }

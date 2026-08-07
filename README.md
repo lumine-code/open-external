@@ -17,17 +17,12 @@ To install `open-external` search for _open-external_ in the Install pane of the
 
 Commands available in `atom-workspace`:
 
-- `open-external:toggle`: toggle automatic external opening.
+- `open-external:toggle`: toggle automatic external opening,
+- `open-external:open`: open externally,
+- `open-external:show`: reveal in the system file manager.
 
-Commands available in `atom-text-editor:not([mini]), .image-view, .image-editor, .pdf-viewer, atom-pane[data-active-item-path] .tab.active`:
-
-- `open-external:open`: open the active file externally,
-- `open-external:show`: reveal the active file in the system file manager.
-
-Commands available in `.tree-view`:
-
-- `open-external:open`: open selected items externally,
-- `open-external:show`: reveal selected items in the system file manager.
+`open-external:open` and `open-external:show` act on the tree view's selection
+when they come from the tree view, and on the active file everywhere else.
 
 ## Usage
 
