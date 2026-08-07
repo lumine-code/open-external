@@ -1,13 +1,26 @@
 {
-  "atom-workspace": {
-    "alt-u": "open-external:toggle"
-  },
   ".tree-view": {
     "alt-enter": "open-external:open",
     "ctrl-enter": "open-external:show",
+    "alt-f12": "open-external:open",
+    "ctrl-f12": "open-external:show",
+    // The tree view is where the flag matters, so this is where it is bound.
+    // It held a bare alt-u at workspace scope too, which is the tier for
+    // revealing a surface, and a config flag is not one.
     "e": "open-external:toggle"
   },
-  "atom-text-editor:not([mini]), .image-editor, .pdf-view, .tree-view": {
+  // One entry per surface rather than a comma list: calculateSpecificity
+  // truncates at the first comma, so every branch would be scored as the
+  // editor's 11 rather than the 10 a class selector earns.
+  "atom-text-editor:not([mini])": {
+    "alt-f12": "open-external:open",
+    "ctrl-f12": "open-external:show"
+  },
+  ".image-editor": {
+    "alt-f12": "open-external:open",
+    "ctrl-f12": "open-external:show"
+  },
+  ".pdf-view": {
     "alt-f12": "open-external:open",
     "ctrl-f12": "open-external:show"
   }
