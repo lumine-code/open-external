@@ -8,6 +8,7 @@ Open files and directories with their system applications.
 - **File manager integration**: reveals active files, tabs, and tree-view selections in the system file manager.
 - **Automatic redirection**: opens files with configured extensions outside Lumine.
 - **Custom handlers**: lets other packages intercept external file operations.
+- **Honest failures**: says so when a path has gone from disk, or when the system opens nothing.
 
 ## Installation
 

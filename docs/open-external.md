@@ -43,8 +43,8 @@ type Handler = {
 
 | Member                     | Description                                                                                   |
 | -------------------------- | --------------------------------------------------------------------------------------------- |
-| `openExternal(filePath)`   | Opens the path with whatever the platform associates with it.                                 |
-| `showInFolder(filePath)`   | Reveals the path in the file manager, selecting it.                                           |
+| `openExternal(filePath)`   | Opens the path with whatever the platform associates with it. Warns if it is gone.            |
+| `showInFolder(filePath)`   | Reveals the path in the file manager, selecting it. Warns if it is gone.                      |
 | `registerHandler(handler)` | Inserts a handler into the priority-ordered chain and returns a `Disposable` that removes it. |
 
 A handler must have a **finite `priority`** and at least one of the two operations; anything else throws a `TypeError` at registration. Higher priority is consulted first.
@@ -90,7 +90,7 @@ Handlers form a chain ordered by descending priority. A handler claims the call 
 
 Register a handler only when it can actually do the job. A handler that claims `showInFolder` and then fails silently leaves the user with nothing, because the platform fallback was skipped.
 
-Both operations take a path, not a URI, and neither validates that it exists.
+Both operations take a path rather than a URI. Once the chain has declined, the path is checked against the filesystem before the platform is asked, and a path that is no longer there raises a warning notification instead. That check comes **after** the handlers, so a handler serving paths that were never on this filesystem is unaffected by it.
 
 ## Teardown
 

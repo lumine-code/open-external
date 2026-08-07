@@ -45,6 +45,67 @@ describe("open-external", () => {
     });
   });
 
+  describe("acting on a path that is not there", () => {
+    const path = require("path");
+    const missing = path.join(__dirname, "renamed-or-deleted-since.txt");
+    let main, warnings, subscription;
+
+    beforeEach(async () => {
+      const pack = await atom.packages.activatePackage("open-external");
+      main = pack.mainModule;
+      warnings = [];
+      // Disposed below: the callback reads `warnings` when it fires, so one
+      // left attached would keep filling the next spec's array as well as
+      // this one's, and every count here would be one too many.
+      subscription = atom.notifications.onDidAddNotification((notification) =>
+        warnings.push(notification),
+      );
+    });
+
+    afterEach(async () => {
+      subscription.dispose();
+      await atom.packages.deactivatePackage("open-external");
+    });
+
+    it("says so rather than revealing nothing", async () => {
+      await main.showInFolder(missing);
+
+      expect(warnings.length).toBe(1);
+      expect(warnings[0].getType()).toBe("warning");
+      expect(warnings[0].getOptions().detail).toBe(missing);
+    });
+
+    it("says so rather than opening nothing", async () => {
+      await main.openExternal(missing);
+
+      expect(warnings.length).toBe(1);
+      expect(warnings[0].getType()).toBe("warning");
+    });
+
+    it("stays quiet for a path that is there", async () => {
+      expect(await main.confirmOnDisk(__filename, "show")).toBe(true);
+      expect(warnings.length).toBe(0);
+    });
+
+    // A handler may serve paths that were never on this filesystem, so the
+    // check has to come after it has had its turn, not before.
+    it("leaves a handler that claimed the path alone", async () => {
+      const shown = [];
+      main.registerHandler({
+        priority: 1,
+        showInFolder: (filePath) => {
+          shown.push(filePath);
+          return true;
+        },
+      });
+
+      await main.showInFolder("remote://never/on/disk");
+
+      expect(shown).toEqual(["remote://never/on/disk"]);
+      expect(warnings.length).toBe(0);
+    });
+  });
+
   describe("revealing the file a tab names", () => {
     let tab;
 
