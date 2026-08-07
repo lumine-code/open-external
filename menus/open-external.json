@@ -25,6 +25,18 @@
       {
         "type": "separator"
       }
+    ],
+    // A file being edited is already open in the editor, so only revealing it
+    // earns a place here. The tab carries no view of its own, hence a scope of
+    // its own; `.active` is what makes it the file the workspace answers with.
+    "atom-text-editor:not([mini]), atom-pane[data-active-item-path] .tab.active": [
+      {
+        "label": "Show in Folder",
+        "command": "open-external:show"
+      },
+      {
+        "type": "separator"
+      }
     ]
   },
   "menu": [

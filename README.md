@@ -5,7 +5,7 @@ Open files and directories with their system applications.
 ## Features
 
 - **External opening**: opens active files and tree-view selections in their default system applications.
-- **File manager integration**: reveals active files and tree-view selections in the system file manager.
+- **File manager integration**: reveals active files, tabs, and tree-view selections in the system file manager.
 - **Automatic redirection**: opens files with configured extensions outside Lumine.
 - **Custom handlers**: lets other packages intercept external file operations.
 
@@ -19,7 +19,7 @@ Commands available in `atom-workspace`:
 
 - `open-external:toggle`: toggle automatic external opening.
 
-Commands available in `atom-text-editor:not([mini]), .image-view, .image-editor, .pdf-viewer`:
+Commands available in `atom-text-editor:not([mini]), .image-view, .image-editor, .pdf-viewer, atom-pane[data-active-item-path] .tab.active`:
 
 - `open-external:open`: open the active file externally,
 - `open-external:show`: reveal the active file in the system file manager.
