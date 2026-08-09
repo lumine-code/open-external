@@ -16,7 +16,7 @@ To install `open-external` search for _open-external_ in the Install pane of the
 
 ## Commands
 
-Commands available in `atom-workspace`:
+Commands available in `lumine-workspace`:
 
 - `open-external:toggle`: toggle automatic external opening,
 - `open-external:open`: open externally,

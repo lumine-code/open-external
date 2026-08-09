@@ -54,7 +54,7 @@ A handler must have a **finite `priority`** and at least one of the two operatio
 Calling the service:
 
 ```js
-const { Disposable } = require("atom");
+const { Disposable } = require("lumine");
 
 module.exports = {
   consumeOpenExternal(service) {
@@ -63,7 +63,7 @@ module.exports = {
   },
 
   revealActiveFile() {
-    const filePath = atom.workspace.getActiveTextEditor()?.getPath();
+    const filePath = lumine.workspace.getActiveTextEditor()?.getPath();
     if (filePath) this.openExternal.showInFolder(filePath);
   },
 };

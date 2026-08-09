@@ -12,7 +12,7 @@
   // One entry per surface rather than a comma list: calculateSpecificity
   // truncates at the first comma, so every branch would be scored as the
   // editor's 11 rather than the 10 a class selector earns.
-  "atom-text-editor:not([mini])": {
+  "lumine-text-editor:not([mini])": {
     "alt-f12": "open-external:open",
     "ctrl-f12": "open-external:show"
   },
