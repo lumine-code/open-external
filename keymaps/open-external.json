@@ -1,7 +1,8 @@
 {
   ".tree-view": {
-    "alt-enter": "open-external:open",
-    "ctrl-enter": "open-external:show",
+    // alt-f12 / ctrl-f12 only. The alt-enter / ctrl-enter pair this used to
+    // carry as well was a second name for the same two commands in one surface
+    // out of four, and it spent the two keystrokes nearest Enter on it.
     "alt-f12": "open-external:open",
     "ctrl-f12": "open-external:show",
     // The tree view is where the flag matters, so this is where it is bound.
