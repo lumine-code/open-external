@@ -26,10 +26,6 @@
   "engines": {
     "lumine": "^1.0.0"
   },
-  "backgroundTips": [
-    "You can open the current file in the application your system associates with it using {{ 'open-external:open' | keystroke }}",
-    "You can reveal the current file in your system file manager with {{ 'open-external:show' | keystroke }}"
-  ],
   "scripts": {
     "test": "lumine --test spec",
     "lint": "eslint . --max-warnings 0",
@@ -72,6 +68,11 @@
       "description": "Allows packages to register handlers for external file operations",
       "versions": {
         "1.0.0": "provideOpenExternal"
+      }
+    },
+    "background-tips.provider": {
+      "versions": {
+        "1.0.0": "provideBackgroundTips"
       }
     }
   },
