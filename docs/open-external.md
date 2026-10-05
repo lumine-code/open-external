@@ -7,7 +7,7 @@ Opens a path in the system's default application or reveals it in the file manag
 | Version     | `1.0.0`                                                 |
 | Provided by | `provideOpenExternal()` returning three functions       |
 | Consumed by | `consumeOpenExternal(service)` returning a `Disposable` |
-| Owner       | `open-external` (bundled)                               |
+| Owner       | `open-external`                                         |
 
 Two audiences share one service. Most consumers only call `openExternal` or `showInFolder`; a package that integrates a specific file manager registers a handler instead and intercepts everyone else's calls.
 
@@ -29,15 +29,15 @@ In your `package.json`:
 
 ```ts
 type OpenExternal = {
-  openExternal(filePath: string): void;
-  showInFolder(filePath: string): void;
+  openExternal(filePath: string): Promise<string | undefined>;
+  showInFolder(filePath: string): Promise<string | undefined>;
   registerHandler(handler: Handler): Disposable;
 };
 
 type Handler = {
   priority: number;
-  openExternal?(filePath: string): boolean | undefined;
-  showInFolder?(filePath: string): boolean | undefined;
+  openExternal?(filePath: string): unknown;
+  showInFolder?(filePath: string): unknown;
 };
 ```
 
@@ -76,9 +76,8 @@ consumeOpenExternal(service) {
   return service.registerHandler({
     priority: 100,
     showInFolder: (filePath) => {
-      if (!this.fileManagerIsInstalled()) return false;
-      this.launchFileManager(filePath);
-      return true;
+      if (!this.fileManagerIsInstalled()) return;
+      return lumine.shell.openApplication(this.fileManagerPath, [filePath]);
     },
   });
 }
@@ -86,7 +85,9 @@ consumeOpenExternal(service) {
 
 ## Behavior
 
-Handlers form a chain ordered by descending priority. A handler claims the call by returning a truthy value; returning falsy — or not implementing that operation at all — passes it to the next one. The built-in platform behavior is the end of the chain, so declining always ends somewhere sensible.
+Handlers form a chain ordered by descending priority. A handler claims the call by returning a value other than `null` or `undefined`; returning either of those — or not implementing that operation at all — passes it to the next one. A returned promise is awaited before its result is checked. The built-in platform behavior is the end of the chain, so declining always ends somewhere sensible.
+
+Use `lumine.shell.openApplication(executablePath, args, { cwd })` when a handler launches a specific application. It starts the executable directly from the main process, passes arguments literally without a shell, and resolves to its process ID after startup. This gives Windows a direct launch from the process that owns the editor window; activation remains subject to the operating system and the application. The default open and reveal operations also run through the editor's main-process shell service.
 
 Register a handler only when it can actually do the job. A handler that claims `showInFolder` and then fails silently leaves the user with nothing, because the platform fallback was skipped.
 

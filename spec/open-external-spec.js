@@ -106,6 +106,45 @@ describe("open-external", () => {
     });
   });
 
+  describe("launching through the main process", () => {
+    let main;
+
+    beforeEach(async () => {
+      main = (await lumine.packages.activatePackage("open-external")).mainModule;
+    });
+
+    afterEach(async () => {
+      await lumine.packages.deactivatePackage("open-external");
+    });
+
+    it("opens the path through the editor's shell service", async () => {
+      const open = spyOn(lumine.shell, "openPath").and.resolveTo("");
+
+      expect(await main.openExternal(__filename)).toBe("");
+
+      expect(open).toHaveBeenCalledOnceWith(__filename);
+    });
+
+    it("retains the system's refusal when the main process cannot open the path", async () => {
+      spyOn(lumine.shell, "openPath").and.resolveTo("No association");
+      const warning = spyOn(lumine.notifications, "addWarning");
+
+      expect(await main.openExternal(__filename)).toBe("No association");
+
+      expect(warning).toHaveBeenCalledOnceWith("Nothing on this system opens that file", {
+        detail: `${__filename}\n\nNo association`,
+      });
+    });
+
+    it("reveals the path through the editor's shell service", async () => {
+      const show = spyOn(lumine.shell, "showItemInFolder").and.resolveTo();
+
+      expect(await main.showInFolder(__filename)).toBe("");
+
+      expect(show).toHaveBeenCalledOnceWith(__filename);
+    });
+  });
+
   describe("revealing the file a tab names", () => {
     let tab;
 
