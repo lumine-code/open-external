@@ -151,14 +151,14 @@ describe("open-external", () => {
       expect(labels).not.toContain("Open Externally");
     });
 
-    it("offers the same in an editor's context menu", async () => {
+    it("leaves revealing out of an editor's context menu", async () => {
       const editor = await lumine.workspace.open(__filename);
       const labels = lumine.contextMenu
         .templateForElement(lumine.views.getView(editor))
         .filter((item) => item.visible !== false)
         .map((item) => item.label);
 
-      expect(labels).toContain("Show in Folder");
+      expect(labels).not.toContain("Show in Folder");
     });
   });
 });
