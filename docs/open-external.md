@@ -95,6 +95,8 @@ Both operations take a path rather than a URI. Once the chain has declined, the 
 
 ## Teardown
 
+Each request snapshots the registered priority order. Handlers added while it waits enter the next request, and a handler removed before its turn is skipped. A non-null result from a handler already invoked still counts as handled after that registration retires, since its external action may already have happened. Deactivation stops remaining handlers and platform fallback; errors from retired handlers or path checks are ignored.
+
 `registerHandler` returns a `Disposable` that removes the handler from the chain; return it directly from `consumeOpenExternal` when the handler is all you registered. A consumer that only calls the service should still return a `Disposable` that drops its reference.
 
 ## Versioning
