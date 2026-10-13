@@ -40,7 +40,16 @@
       },
       {
         "label": "Show in Folder",
-        "command": "open-external:show"
+        "command": "open-external:show",
+        "before": ["tree-view:rename", "diff-view:enable"],
+        "afterGroupContaining": [
+          "pane:detach",
+          "pane:close",
+          "tabs:detach-tab",
+          "tabs:open-in-new-window",
+          "tabs:split-up",
+          "tabs:close-tab"
+        ]
       },
       {
         "type": "separator"
