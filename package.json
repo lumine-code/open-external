@@ -61,6 +61,12 @@
         "cdb",
         "plb"
       ]
+    },
+    "showTreeViewContextMenu": {
+      "title": "Show direct actions in Tree View context menu",
+      "description": "Show Open Externally and Show in Folder directly in the Tree View context menu.",
+      "type": "boolean",
+      "default": false
     }
   },
   "providedServices": {
