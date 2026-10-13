@@ -5,11 +5,15 @@
       "submenu": [
         {
           "label": "Open Externally",
-          "command": "open-external:open"
+          "command": "open-external:open",
+          "group": "external",
+          "order": 10
         },
         {
           "label": "Show in Folder",
-          "command": "open-external:show"
+          "command": "open-external:show",
+          "group": "external",
+          "order": 20
         }
       ]
     },
