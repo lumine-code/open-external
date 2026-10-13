@@ -6,7 +6,7 @@ describe("open-external", () => {
     expect(lumine.packages.isPackageActive("open-external")).toBe(false);
   });
 
-  describe("file opener choices", () => {
+  describe("path opener choices", () => {
     let main, pane;
 
     beforeEach(async () => {
@@ -24,10 +24,25 @@ describe("open-external", () => {
       const open = spyOn(main, "openExternal");
       const show = spyOn(main, "showInFolder");
 
-      expect(lumine.workspace.getAvailableFileOpeners(__filename)).toEqual([
-        { id: "text-editor", label: "Text Editor", isDefault: true },
-        { id: "open-external", label: "Open Externally", isDefault: false },
-        { id: "open-external:show", label: "Show in Folder", isDefault: false },
+      expect(lumine.workspace.getAvailablePathOpeners(__filename)).toEqual([
+        {
+          id: "text-editor",
+          label: "Text Editor",
+          isDefault: true,
+          destinations: ["current", "new-window", "detached-window"],
+        },
+        {
+          id: "open-external",
+          label: "Open Externally",
+          isDefault: false,
+          destinations: ["current"],
+        },
+        {
+          id: "open-external:show",
+          label: "Show in Folder",
+          isDefault: false,
+          destinations: ["current"],
+        },
       ]);
       expect(open).not.toHaveBeenCalled();
       expect(show).not.toHaveBeenCalled();
@@ -39,10 +54,25 @@ describe("open-external", () => {
       const show = spyOn(main, "showInFolder");
       lumine.config.set("open-external.flag", true);
 
-      expect(lumine.workspace.getAvailableFileOpeners(__filename)).toEqual([
-        { id: "open-external", label: "Open Externally", isDefault: true },
-        { id: "open-external:show", label: "Show in Folder", isDefault: false },
-        { id: "text-editor", label: "Text Editor", isDefault: false },
+      expect(lumine.workspace.getAvailablePathOpeners(__filename)).toEqual([
+        {
+          id: "open-external",
+          label: "Open Externally",
+          isDefault: true,
+          destinations: ["current"],
+        },
+        {
+          id: "open-external:show",
+          label: "Show in Folder",
+          isDefault: false,
+          destinations: ["current"],
+        },
+        {
+          id: "text-editor",
+          label: "Text Editor",
+          isDefault: false,
+          destinations: ["current", "new-window", "detached-window"],
+        },
       ]);
       await lumine.workspace.open(__filename);
 
@@ -65,10 +95,41 @@ describe("open-external", () => {
       expect(pane.getItems()).toEqual([]);
     });
 
+    it("offers both external actions on a folder while the project remains default", () => {
+      const open = spyOn(main, "openExternal");
+      const show = spyOn(main, "showInFolder");
+      lumine.config.set("open-external.flag", true);
+      // A folder name may have an extension on the automatic external list.
+      // Its path kind, rather than that suffix, decides the default action.
+      const folder = require("node:path").join(__dirname, "folder.js");
+      expect(lumine.workspace.getAvailablePathOpeners(folder, { pathKind: "directory" })).toEqual([
+        {
+          id: "project-folder",
+          label: "Project Folder",
+          isDefault: true,
+          destinations: ["current", "new-window"],
+        },
+        {
+          id: "open-external",
+          label: "Open Externally",
+          isDefault: false,
+          destinations: ["current"],
+        },
+        {
+          id: "open-external:show",
+          label: "Show in Folder",
+          isDefault: false,
+          destinations: ["current"],
+        },
+      ]);
+      expect(open).not.toHaveBeenCalled();
+      expect(show).not.toHaveBeenCalled();
+    });
+
     it("removes both choices when the package deactivates", async () => {
       await lumine.packages.deactivatePackage("open-external");
 
-      const ids = lumine.workspace.getAvailableFileOpeners(__filename).map(({ id }) => id);
+      const ids = lumine.workspace.getAvailablePathOpeners(__filename).map(({ id }) => id);
       expect(ids).not.toContain("open-external");
       expect(ids).not.toContain("open-external:show");
     });
