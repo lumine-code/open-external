@@ -1,4 +1,41 @@
 {
+  "menu": [
+    {
+      "label": "File",
+      "submenu": [
+        {
+          "label": "Open Externally",
+          "command": "open-external:open"
+        },
+        {
+          "label": "Show in Folder",
+          "command": "open-external:show"
+        }
+      ]
+    },
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "Open External",
+          "submenu": [
+            {
+              "label": "Toggle Automatic Opening",
+              "command": "open-external:toggle"
+            },
+            {
+              "label": "Open Externally",
+              "command": "open-external:open"
+            },
+            {
+              "label": "Show in Folder",
+              "command": "open-external:show"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "context-menu": {
     ".tree-view .file, .tree-view .directory": [
       {
@@ -62,29 +99,5 @@
         "type": "separator"
       }
     ]
-  },
-  "menu": [
-    {
-      "label": "Packages",
-      "submenu": [
-        {
-          "label": "Open External",
-          "submenu": [
-            {
-              "label": "Toggle Automatic Opening",
-              "command": "open-external:toggle"
-            },
-            {
-              "label": "Open Externally",
-              "command": "open-external:open"
-            },
-            {
-              "label": "Show in Folder",
-              "command": "open-external:show"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  }
 }

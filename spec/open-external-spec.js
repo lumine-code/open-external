@@ -33,15 +33,23 @@ describe("open-external", () => {
       expect(main.pathsForEvent({ target: lumine.workspace.getElement() })).toEqual([__filename]);
     });
 
-    it("says why it refused when there is no file to act on", () => {
+    it("says why it refused when the active file is unsaved", () => {
       main.consumeTreeViewSelection({ selectedPaths: () => [] });
-      const warnings = [];
-      lumine.notifications.onDidAddNotification((notification) => warnings.push(notification));
+      spyOn(lumine.workspace, "getActivePaneItem").and.returnValue({ getPath: () => undefined });
+      spyOn(lumine.notifications, "addWarning");
 
       main.runForEvent({ target: lumine.workspace.getElement() }, "showInFolder");
 
-      expect(warnings.length).toBe(1);
-      expect(warnings[0].getType()).toBe("warning");
+      expect(lumine.notifications.addWarning).toHaveBeenCalled();
+    });
+
+    it("stays quiet when there is no active item", () => {
+      spyOn(lumine.workspace, "getActivePaneItem").and.returnValue(null);
+      spyOn(lumine.notifications, "addWarning");
+
+      main.runForEvent({ target: lumine.workspace.getElement() }, "showInFolder");
+
+      expect(lumine.notifications.addWarning).not.toHaveBeenCalled();
     });
   });
 
