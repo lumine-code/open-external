@@ -43,25 +43,16 @@
   "context-menu": {
     ".tree-view .file, .tree-view .directory": [
       {
-        "type": "separator"
-      },
-      {
         "label": "Open Externally",
         "command": "open-external:open",
-        "afterGroupContaining": [
-          "tree-view:open-selected-entry-up",
-          "native-clip:paste",
-          "tree-view:paste",
-          "tree-view:remove",
-          "tree-view:add-file"
-        ]
+        "group": "opening",
+        "order": 30
       },
       {
         "label": "Show in Folder",
-        "command": "open-external:show"
-      },
-      {
-        "type": "separator"
+        "command": "open-external:show",
+        "group": "opening",
+        "order": 40
       }
     ],
     ".image-editor, .pdf-view": [
