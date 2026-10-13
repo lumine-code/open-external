@@ -6,6 +6,74 @@ describe("open-external", () => {
     expect(lumine.packages.isPackageActive("open-external")).toBe(false);
   });
 
+  describe("file opener choices", () => {
+    let main, pane;
+
+    beforeEach(async () => {
+      main = (await lumine.packages.activatePackage("open-external")).mainModule;
+      pane = lumine.workspace.getActivePane();
+      lumine.config.set("open-external.flag", false);
+      lumine.config.set("open-external.list", ["js"]);
+    });
+
+    afterEach(async () => {
+      await lumine.packages.deactivatePackage("open-external");
+    });
+
+    it("lists both external actions without launching either", () => {
+      const open = spyOn(main, "openExternal");
+      const show = spyOn(main, "showInFolder");
+
+      expect(lumine.workspace.getAvailableFileOpeners(__filename)).toEqual([
+        { id: "text-editor", label: "Text Editor", isDefault: true },
+        { id: "open-external", label: "Open Externally", isDefault: false },
+        { id: "open-external:show", label: "Show in Folder", isDefault: false },
+      ]);
+      expect(open).not.toHaveBeenCalled();
+      expect(show).not.toHaveBeenCalled();
+      expect(pane.getItems()).toEqual([]);
+    });
+
+    it("keeps the external action first when it is the automatic default", async () => {
+      const open = spyOn(main, "openExternal").and.resolveTo("");
+      const show = spyOn(main, "showInFolder");
+      lumine.config.set("open-external.flag", true);
+
+      expect(lumine.workspace.getAvailableFileOpeners(__filename)).toEqual([
+        { id: "open-external", label: "Open Externally", isDefault: true },
+        { id: "open-external:show", label: "Show in Folder", isDefault: false },
+        { id: "text-editor", label: "Text Editor", isDefault: false },
+      ]);
+      await lumine.workspace.open(__filename);
+
+      expect(open).toHaveBeenCalledOnceWith(__filename);
+      expect(show).not.toHaveBeenCalled();
+      expect(pane.getItems()).toEqual([]);
+    });
+
+    it("runs each explicitly selected action without opening a pane item", async () => {
+      const open = spyOn(main, "openExternal").and.resolveTo("");
+      const show = spyOn(main, "showInFolder").and.resolveTo("");
+
+      await lumine.workspace.open(__filename, { opener: "open-external" });
+      expect(open).toHaveBeenCalledOnceWith(__filename);
+      expect(show).not.toHaveBeenCalled();
+
+      await lumine.workspace.open(__filename, { opener: "open-external:show" });
+      expect(show).toHaveBeenCalledOnceWith(__filename);
+      expect(open).toHaveBeenCalledTimes(1);
+      expect(pane.getItems()).toEqual([]);
+    });
+
+    it("removes both choices when the package deactivates", async () => {
+      await lumine.packages.deactivatePackage("open-external");
+
+      const ids = lumine.workspace.getAvailableFileOpeners(__filename).map(({ id }) => id);
+      expect(ids).not.toContain("open-external");
+      expect(ids).not.toContain("open-external:show");
+    });
+  });
+
   describe("choosing what a command acts on", () => {
     let main;
 
