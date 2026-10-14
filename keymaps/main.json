@@ -1,10 +1,8 @@
 {
   ".tree-view": {
-    // alt-f12 / ctrl-f12 only. The alt-enter / ctrl-enter pair this used to
-    // carry as well was a second name for the same two commands in one surface
-    // out of four, and it spent the two keystrokes nearest Enter on it.
-    "alt-f12": "open-external:open",
-    "ctrl-f12": "open-external:show",
+    // Match Ctrl+Alt-click and Ctrl+Shift-click on path rows.
+    "ctrl-alt-enter": "open-external:open",
+    "ctrl-shift-enter": "open-external:show",
     // The tree view is where the flag matters, so this is where it is bound.
     // It held a bare alt-u at workspace scope too, which is the tier for
     // revealing a surface, and a config flag is not one.
@@ -12,17 +10,17 @@
   },
   // One entry per surface rather than a comma list: calculateSpecificity
   // truncates at the first comma, so every branch would be scored as the
-  // editor's 11 rather than the 10 a class selector earns.
-  "lumine-text-editor:not([mini])": {
-    "alt-f12": "open-external:open",
-    "ctrl-f12": "open-external:show"
+  // editor's 12 rather than the 10 a class selector earns.
+  "lumine-workspace lumine-text-editor:not([mini])": {
+    "ctrl-alt-enter": "open-external:open",
+    "ctrl-shift-enter": "open-external:show"
   },
   ".image-editor": {
-    "alt-f12": "open-external:open",
-    "ctrl-f12": "open-external:show"
+    "ctrl-alt-enter": "open-external:open",
+    "ctrl-shift-enter": "open-external:show"
   },
   ".pdf-view": {
-    "alt-f12": "open-external:open",
-    "ctrl-f12": "open-external:show"
+    "ctrl-alt-enter": "open-external:open",
+    "ctrl-shift-enter": "open-external:show"
   }
 }
