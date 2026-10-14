@@ -1,8 +1,8 @@
 {
   ".tree-view": {
-    // Match Ctrl+Alt-click and Ctrl+Shift-click on path rows.
+    // Match Ctrl+Alt-click and Alt+Shift-click on path rows.
     "ctrl-alt-enter": "open-external:open",
-    "ctrl-shift-enter": "open-external:show",
+    "alt-shift-enter": "open-external:show",
     // The tree view is where the flag matters, so this is where it is bound.
     // It held a bare alt-u at workspace scope too, which is the tier for
     // revealing a surface, and a config flag is not one.
@@ -13,14 +13,14 @@
   // editor's 12 rather than the 10 a class selector earns.
   "lumine-workspace lumine-text-editor:not([mini])": {
     "ctrl-alt-enter": "open-external:open",
-    "ctrl-shift-enter": "open-external:show"
+    "alt-shift-enter": "open-external:show"
   },
   ".image-editor": {
     "ctrl-alt-enter": "open-external:open",
-    "ctrl-shift-enter": "open-external:show"
+    "alt-shift-enter": "open-external:show"
   },
   ".pdf-view": {
     "ctrl-alt-enter": "open-external:open",
-    "ctrl-shift-enter": "open-external:show"
+    "alt-shift-enter": "open-external:show"
   }
 }

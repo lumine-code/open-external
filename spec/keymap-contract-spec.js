@@ -50,11 +50,11 @@ describe("open-external standard Enter shortcuts", () => {
       const originalText = editor.getText();
       for (const [keystrokes, command] of [
         ["ctrl-alt-enter", "open-external:open"],
-        ["ctrl-shift-enter", "open-external:show"],
+        ["alt-shift-enter", "open-external:show"],
       ]) {
         expect(lumine.keymaps.findKeyBindings({ target, keystrokes })[0]?.command).toBe(command);
       }
-      for (const keystrokes of ["alt-f12", "ctrl-f12"]) {
+      for (const keystrokes of ["alt-f12", "ctrl-f12", "ctrl-shift-enter"]) {
         expect(
           lumine.keymaps
             .findKeyBindings({ target, keystrokes })
@@ -66,7 +66,7 @@ describe("open-external standard Enter shortcuts", () => {
       await flushMicrotasks();
       expect(main.openExternal).toHaveBeenCalledOnceWith(__filename);
       expect(main.showInFolder).not.toHaveBeenCalled();
-      press(target, { shiftKey: true });
+      press(target, { ctrlKey: false, altKey: true, shiftKey: true });
       await flushMicrotasks();
       expect(main.showInFolder).toHaveBeenCalledOnceWith(__filename);
       expect(main.openExternal).toHaveBeenCalledTimes(1);
