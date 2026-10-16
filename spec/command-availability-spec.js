@@ -22,6 +22,18 @@ describe("External path command availability", () => {
     leases.dispose();
     target.remove();
   });
+  it("restores the preceding live selection provider when the latest lease ends", () => {
+    const first = { getSelectionSnapshot: () => ({ count: 1 }), selectedPaths: () => [__filename] };
+    const second = { getSelectionSnapshot: () => ({ count: 0 }), selectedPaths: () => [] };
+    leases.add(main.consumeTreeViewSelection(first));
+    const latest = main.consumeTreeViewSelection(second);
+    leases.add(latest);
+    expect(lumine.commands.canDispatch(target, "open-external:open")).toBe(false);
+    latest.dispose();
+    expect(lumine.commands.canDispatch(target, "open-external:open")).toBe(true);
+    expect(main.pathsForEvent({ target })).toEqual([__filename]);
+  });
+
   it("requires an actual cached target path while preserving the global toggle", () => {
     expect(lumine.commands.canDispatch(lumine.workspace.getElement(), "open-external:open")).toBe(
       false,
