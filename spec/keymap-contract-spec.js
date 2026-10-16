@@ -6,7 +6,10 @@ describe("open-external standard Enter shortcuts", () => {
     jasmine.attachToDOM(lumine.workspace.getElement());
     main = (await lumine.packages.activatePackage("open-external")).mainModule;
     editor = await lumine.workspace.open(__filename, { opener: "text-editor" });
-    selection = main.consumeTreeViewSelection({ selectedPaths: () => [__filename] });
+    selection = main.consumeTreeViewSelection({
+      selectedPaths: () => [__filename],
+      getSelectionSnapshot: () => ({ count: 1 }),
+    });
     surfaces = ["tree-view", "image-editor", "pdf-view"].map((className) => {
       const root = document.createElement("div");
       root.className = className;
