@@ -162,6 +162,32 @@ describe("open-external", () => {
       expect(main.pathsForEvent({ target: lumine.workspace.getElement() })).toEqual([__filename]);
     });
 
+    it("keeps the saved file view instead of a different active pane item", () => {
+      spyOn(lumine.workspace, "getActivePaneItem").and.returnValue({
+        getPath: () => "/unrelated/active.txt",
+      });
+
+      expect(
+        main.pathsForEvent({
+          target: lumine.workspace.getElement(),
+          context: { item: { getPath: () => "/clicked/image.png" } },
+        }),
+      ).toEqual(["/clicked/image.png"]);
+    });
+
+    it("uses the clicked tab's item without falling back from an unsaved tab", () => {
+      const tab = document.createElement("li");
+      tab.className = "tab";
+      tab.item = { getPath: () => "/clicked/document.txt" };
+      spyOn(lumine.workspace, "getActivePaneItem").and.returnValue({
+        getPath: () => "/unrelated/active.txt",
+      });
+
+      expect(main.pathsForEvent({ target: tab })).toEqual(["/clicked/document.txt"]);
+      tab.item = { getPath: () => undefined };
+      expect(main.pathsForEvent({ target: tab })).toEqual([]);
+    });
+
     it("says why it refused when the active file is unsaved", () => {
       main.consumeTreeViewSelection({ selectedPaths: () => [] });
       spyOn(lumine.workspace, "getActivePaneItem").and.returnValue({ getPath: () => undefined });
