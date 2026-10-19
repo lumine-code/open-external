@@ -9,14 +9,14 @@
             {
               "label": "Open Externally",
               "command": "open-external:open",
-              "group": "open",
+              "group": "actions",
               "order": 10
             },
             {
               "label": "Show in Folder",
               "command": "open-external:show",
-              "group": "reveal",
-              "order": 10
+              "group": "actions",
+              "order": 20
             }
           ]
         }
