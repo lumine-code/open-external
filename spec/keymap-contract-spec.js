@@ -1,4 +1,4 @@
-describe("open-external standard Enter shortcuts", () => {
+describe("open-external surface shortcuts", () => {
   let main, editor, surfaces, selection;
 
   beforeEach(async () => {
@@ -29,11 +29,10 @@ describe("open-external standard Enter shortcuts", () => {
     await lumine.packages.deactivatePackage("open-external");
   });
 
-  function press(target, modifiers) {
+  function press(target, key, modifiers) {
     const event = new KeyboardEvent("keydown", {
-      key: "Enter",
-      code: "Enter",
-      ctrlKey: true,
+      key,
+      code: key,
       bubbles: true,
       cancelable: true,
       ...modifiers,
@@ -48,16 +47,20 @@ describe("open-external standard Enter shortcuts", () => {
     ["PDF view", 2],
     ["text editor", 3],
   ]) {
-    it(`dispatches the two Enter variants once on the ${label} without F12 aliases`, async () => {
+    it(`dispatches the two shortcuts once on the ${label}`, async () => {
+      const isTextEditor = index === 3;
       const target = index === 3 ? editor.getElement() : surfaces[index].child;
       const originalText = editor.getText();
       for (const [keystrokes, command] of [
-        ["ctrl-alt-enter", "open-external:open"],
-        ["alt-shift-enter", "open-external:show"],
+        [isTextEditor ? "alt-f12" : "ctrl-alt-enter", "open-external:open"],
+        [isTextEditor ? "ctrl-f12" : "alt-shift-enter", "open-external:show"],
       ]) {
         expect(lumine.keymaps.findKeyBindings({ target, keystrokes })[0]?.command).toBe(command);
       }
-      for (const keystrokes of ["alt-f12", "ctrl-f12", "ctrl-shift-enter"]) {
+      const unbound = isTextEditor
+        ? ["ctrl-alt-enter", "alt-shift-enter", "ctrl-shift-enter"]
+        : ["alt-f12", "ctrl-f12", "ctrl-shift-enter"];
+      for (const keystrokes of unbound) {
         expect(
           lumine.keymaps
             .findKeyBindings({ target, keystrokes })
@@ -65,11 +68,12 @@ describe("open-external standard Enter shortcuts", () => {
         ).toBe(false);
       }
 
-      press(target, { altKey: true });
+      const key = isTextEditor ? "F12" : "Enter";
+      press(target, key, { ctrlKey: !isTextEditor, altKey: true });
       await flushMicrotasks();
       expect(main.openExternal).toHaveBeenCalledOnceWith(__filename);
       expect(main.showInFolder).not.toHaveBeenCalled();
-      press(target, { ctrlKey: false, altKey: true, shiftKey: true });
+      press(target, key, isTextEditor ? { ctrlKey: true } : { altKey: true, shiftKey: true });
       await flushMicrotasks();
       expect(main.showInFolder).toHaveBeenCalledOnceWith(__filename);
       expect(main.openExternal).toHaveBeenCalledTimes(1);
