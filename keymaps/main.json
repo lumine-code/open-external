@@ -8,19 +8,8 @@
     // revealing a surface, and a config flag is not one.
     "e": "open-external:toggle"
   },
-  // One entry per surface rather than a comma list: calculateSpecificity
-  // truncates at the first comma, so every branch would be scored as the
-  // editor's 12 rather than the 10 a class selector earns.
-  "lumine-workspace lumine-text-editor:not([mini])": {
+  "lumine-workspace lumine-pane:not(lumine-dock lumine-pane)": {
     "alt-f12": "open-external:open",
     "ctrl-f12": "open-external:show"
-  },
-  ".image-editor": {
-    "ctrl-alt-enter": "open-external:open",
-    "alt-shift-enter": "open-external:show"
-  },
-  ".pdf-view": {
-    "ctrl-alt-enter": "open-external:open",
-    "alt-shift-enter": "open-external:show"
   }
 }
