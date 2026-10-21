@@ -93,14 +93,26 @@ describe("open-external surface shortcuts", () => {
       }
       const originalText = editor.getText();
       for (const [keystrokes, command] of [
-        ["alt-f12", "open-external:open"],
-        ["ctrl-f12", "open-external:show"],
+        ["ctrl-alt-f12", "open-external:open"],
+        ["alt-shift-f12", "open-external:show"],
       ]) {
         expect(lumine.keymaps.findKeyBindings({ target, keystrokes })[0]?.command).toBe(command);
       }
-      expectUnbound(target, ["ctrl-alt-enter", "alt-shift-enter", "ctrl-shift-enter"]);
+      expectUnbound(target, [
+        "alt-f12",
+        "ctrl-f12",
+        "ctrl-alt-enter",
+        "alt-shift-enter",
+        "ctrl-shift-enter",
+      ]);
 
-      await expectActions(target, __filename, "F12", { altKey: true }, { ctrlKey: true });
+      await expectActions(
+        target,
+        __filename,
+        "F12",
+        { ctrlKey: true, altKey: true },
+        { altKey: true, shiftKey: true },
+      );
       expect(editor.getText()).toBe(originalText);
     });
   }
@@ -113,7 +125,13 @@ describe("open-external surface shortcuts", () => {
     ]) {
       expect(lumine.keymaps.findKeyBindings({ target, keystrokes })[0]?.command).toBe(command);
     }
-    expectUnbound(target, ["alt-f12", "ctrl-f12", "ctrl-shift-enter"]);
+    expectUnbound(target, [
+      "ctrl-alt-f12",
+      "alt-shift-f12",
+      "alt-f12",
+      "ctrl-f12",
+      "ctrl-shift-enter",
+    ]);
     await expectActions(
       target,
       __filename,
@@ -132,7 +150,13 @@ describe("open-external surface shortcuts", () => {
     expect(lumine.workspace.getActivePane()).toBe(activePane);
     expect(lumine.workspace.getActivePaneItem()).toBe(editor);
     expect(otherPane.getActiveItem()).toBe(item);
-    await expectActions(item.firstChild, filePath, "F12", { altKey: true }, { ctrlKey: true });
+    await expectActions(
+      item.firstChild,
+      filePath,
+      "F12",
+      { ctrlKey: true, altKey: true },
+      { altKey: true, shiftKey: true },
+    );
   });
 
   it("does not bind F12 outside the center panes", async () => {
@@ -144,9 +168,16 @@ describe("open-external surface shortcuts", () => {
     panels.push(lumine.workspace.addModalPanel({ item: modalItem }));
 
     for (const target of [dockItem.firstChild, modalItem.firstChild]) {
-      expectUnbound(target, ["alt-f12", "ctrl-f12", "ctrl-alt-enter", "alt-shift-enter"]);
-      press(target, "F12", { altKey: true });
-      press(target, "F12", { ctrlKey: true });
+      expectUnbound(target, [
+        "ctrl-alt-f12",
+        "alt-shift-f12",
+        "alt-f12",
+        "ctrl-f12",
+        "ctrl-alt-enter",
+        "alt-shift-enter",
+      ]);
+      press(target, "F12", { ctrlKey: true, altKey: true });
+      press(target, "F12", { altKey: true, shiftKey: true });
     }
     await flushMicrotasks();
     expect(main.openExternal).not.toHaveBeenCalled();

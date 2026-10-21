@@ -9,7 +9,7 @@
     "e": "open-external:toggle"
   },
   "lumine-workspace lumine-pane:not(lumine-dock lumine-pane)": {
-    "alt-f12": "open-external:open",
-    "ctrl-f12": "open-external:show"
+    "ctrl-alt-f12": "open-external:open",
+    "alt-shift-f12": "open-external:show"
   }
 }
