@@ -281,7 +281,7 @@ describe("open-external", () => {
     });
 
     it("opens the path through the editor's shell service", async () => {
-      const open = spyOn(lumine.shell, "openPath").and.resolveTo("");
+      const open = spyOn(lumine.shell, "openPath").and.resolveTo();
 
       expect(await main.openExternal(__filename)).toBe("");
 
@@ -289,12 +289,12 @@ describe("open-external", () => {
     });
 
     it("retains the system's refusal when the main process cannot open the path", async () => {
-      spyOn(lumine.shell, "openPath").and.resolveTo("No association");
+      spyOn(lumine.shell, "openPath").and.rejectWith(new Error("No association"));
       const warning = spyOn(lumine.notifications, "addWarning");
 
       expect(await main.openExternal(__filename)).toBe("No association");
 
-      expect(warning).toHaveBeenCalledOnceWith("Nothing on this system opens that file", {
+      expect(warning).toHaveBeenCalledOnceWith("Could not open the file externally", {
         detail: `${__filename}\n\nNo association`,
       });
     });

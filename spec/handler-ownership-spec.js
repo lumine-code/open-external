@@ -159,6 +159,21 @@ describe("open-external handler request ownership", () => {
     expect(shell).not.toHaveBeenCalled();
   });
 
+  it("does not warn when a pending platform open fails after deactivation", async () => {
+    const response = deferred();
+    shell.and.returnValue(response.promise);
+    const warning = spyOn(lumine.notifications, "addWarning");
+    const pending = service.openExternal(file);
+    await flushMicrotasks();
+    expect(shell).toHaveBeenCalledOnceWith(file);
+
+    await lumine.packages.deactivatePackage("open-external");
+    response.reject(new Error("retired system request"));
+    await pending;
+
+    expect(warning).not.toHaveBeenCalled();
+  });
+
   for (const operation of ["openExternal", "showInFolder"]) {
     it(`does not continue ${operation} after a disk check outlives deactivation`, async () => {
       const disk = deferred();
